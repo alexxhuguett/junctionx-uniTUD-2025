@@ -10,5 +10,5 @@ INSERT INTO demo_users (name, email) VALUES
                                          ('Charlie', 'charlie@example.com')
     ON CONFLICT (email) DO NOTHING;
 
-Quick verifgication:
+-- Quick verification:
 SELECT * FROM demo_users;
