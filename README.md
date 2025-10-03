@@ -284,7 +284,7 @@ docker exec -i junctionx-unitud-2025-postgres \
 
 We provide helper scripts to quickly validate the setup. Make sure you gave them execution permissions first:
 
-chmod +x scripts/check_db.sh scripts/check_backend.sh scripts/full_check.sh
+chmod +x scripts/check_db.sh scripts/check_backend.sh scripts/full_check.sh scripts/reset_db.sh
 
 1. Check Database
 
@@ -326,3 +326,9 @@ Expected output:
 ✅ Backend connected to DB
 
 🎉 ALL CHECKS PASSED — System is ready!
+
+4. DB reset with seed.sql for clean start
+
+./scripts/reset_db.sh
+
+
