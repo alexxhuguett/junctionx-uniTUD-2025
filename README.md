@@ -160,7 +160,14 @@ pgAdmin: http://localhost:5050
 
 login: admin@example.com / admin
 
+---
+## Running desktop app 
 
+Desktop app can be run by running the following command in the client module:
+
+mvn javafx:run
+
+Make sure to reload maven to load the pom.xml files.
 
 # Hackathon Setup Checklist (Local Env)
 1. Java 21
@@ -330,5 +337,3 @@ Expected output:
 4. DB reset with seed.sql for clean start
 
 ./scripts/reset_db.sh
-
-
