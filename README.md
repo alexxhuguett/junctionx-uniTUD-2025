@@ -15,7 +15,7 @@ Every team member must follow these steps after cloning the repository.
     docker --version
     docker compose version
     ```
-- Install **Java 17 or 21**  
+- Install **Java 21!!!**  (Ensure you are using version 21)
   - Verify installation:  
     ```bash
     java -version
@@ -159,6 +159,7 @@ docker compose -f infra/docker-compose.yml down
 pgAdmin: http://localhost:5050
 
 login: admin@example.com / admin
+
 
 
 
