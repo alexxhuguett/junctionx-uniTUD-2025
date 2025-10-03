@@ -278,3 +278,51 @@ docker exec -i junctionx-unitud-2025-postgres \
 
 ✅ You should see 3 rows (Alice, Bob, Charlie).
 
+
+
+# Quick System Checks with Scripts
+
+We provide helper scripts to quickly validate the setup. Make sure you gave them execution permissions first:
+
+chmod +x scripts/check_db.sh scripts/check_backend.sh scripts/full_check.sh
+
+1. Check Database
+
+Lists all tables in the appdb database.
+
+./scripts/check_db.sh
+
+
+Expected output: a list of tables, for example:
+
+ Schema |    Name    | Type  | Owner
+--------+------------+-------+-------
+ public | app_user   | table | app
+(1 row)
+
+2. Check Backend Health
+
+Verifies that the backend is running and connected to PostgreSQL.
+
+./scripts/check_backend.sh
+
+
+Expected output:
+
+✅ Backend OK
+
+3. Full System Check
+
+Runs all checks together: Docker containers, database, backend health.
+
+./scripts/full_check.sh
+
+
+Expected output:
+
+🔍 Running full system check...
+✅ Postgres container running
+✅ pgAdmin container running
+✅ Backend connected to DB
+
+🎉 ALL CHECKS PASSED — System is ready!
