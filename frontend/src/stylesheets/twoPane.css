@@ -1,0 +1,54 @@
+/* Ensure full height for layout */
+html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+}
+
+/* Wrapper for both panels */
+.two-pane {
+    display: grid;
+    grid-template-columns: 2fr 1fr;   /* left panel twice as wide as right */
+    height: 100%;
+    width: 100%;
+    gap: 16px;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* Shared styles for both panes */
+.pane {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden; /* good for maps or cards that fill pane */
+    display: flex;
+    flex-direction: column;
+
+    justify-content: flex-start;
+}
+
+/* Left (map) panel — ensure it stretches and contains child content */
+.pane-left {
+    min-height: 0;
+    background-color: #222233;
+}
+
+/* Right (dashboard) panel — scrollable if it overflows */
+.pane-right {
+    overflow-y: auto;
+    padding: 20px;
+    background-color: #161629;
+}
+
+/* Responsive layout: stack on narrow screens */
+@media (max-width: 900px) {
+    .two-pane {
+        grid-template-columns: 1fr;
+    }
+
+    .pane-right {
+        margin-top: 16px;
+    }
+}

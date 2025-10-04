@@ -1,7 +1,11 @@
+import MapPlaceholder from "../components/MapPlaceholder.jsx";
+import Dashboard from "../components/Dashboard.jsx";
+import DriverMap from "../components/DriverMap.jsx";
+import TwoPane from "../components/TwoPane.jsx";
+
 export default function User() {
     return (
-        <div>
-            <h1>This is the User page</h1>
-        </div>
+        <TwoPane left = {<DriverMap />} right = {<Dashboard />}></TwoPane>
+        // <button></button>
     );
 }
