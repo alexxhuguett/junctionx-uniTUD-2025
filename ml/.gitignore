@@ -1,0 +1,22 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+
+# OS/editor
+.DS_Store
+.ipynb_checkpoints/
+
+# Models and artifacts
+models/
+*.pkl
+*.joblib
+*.onnx
+
+# Data derivatives (keep raw XLSX tracked)
+data/tmp/
+data/processed/
+
