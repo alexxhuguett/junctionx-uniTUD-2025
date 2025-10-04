@@ -1,0 +1,4 @@
+enum FuelType {
+    DRIVER,
+    COURIER
+}
