@@ -42,6 +42,9 @@ public class IncentiveWeekly {
     @Column(name = "completed_jobs", nullable = false)
     private Integer completedJobs;
 
+    @Column(name = "achieved_bonus")
+    private Double achievedBonus;
+
     /** Bonus amount (in euros). */
     @Column(name = "bonus_eur")
     private Double bonusEur;
@@ -66,25 +69,70 @@ public class IncentiveWeekly {
 
     // ========= Getters/Setters =========
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
-    public Earner getEarner() { return earner; }
-    public void setEarner(Earner earner) { this.earner = earner; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Integer getCityId() { return cityId; }
-    public void setCityId(Integer cityId) { this.cityId = cityId; }
+    public Earner getEarner() {
+        return earner;
+    }
 
-    public String getWeek() { return week; }
-    public void setWeek(String week) { this.week = week; }
+    public void setEarner(Earner earner) {
+        this.earner = earner;
+    }
 
-    public Integer getTargetJobs() { return targetJobs; }
-    public void setTargetJobs(Integer targetJobs) { this.targetJobs = targetJobs; }
+    public Integer getCityId() {
+        return cityId;
+    }
 
-    public Integer getCompletedJobs() { return completedJobs; }
-    public void setCompletedJobs(Integer completedJobs) { this.completedJobs = completedJobs; }
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
 
-    public Double getBonusEur() { return bonusEur; }
-    public void setBonusEur(Double bonusEur) { this.bonusEur = bonusEur; }
+    public String getWeek() {
+        return week;
+    }
+
+    public void setWeek(String week) {
+        this.week = week;
+    }
+
+    public Integer getTargetJobs() {
+        return targetJobs;
+    }
+
+    public void setTargetJobs(Integer targetJobs) {
+        this.targetJobs = targetJobs;
+    }
+
+    public Integer getCompletedJobs() {
+        return completedJobs;
+    }
+
+    public void setCompletedJobs(Integer completedJobs) {
+        this.completedJobs = completedJobs;
+    }
+
+    public Double getAchievedBonus() {
+        return achievedBonus;
+    }
+
+    public void setAchievedBonus(Double achievedBonus) {
+        this.achievedBonus = achievedBonus;
+    }
+
+    public Double getBonusEur() {
+        return bonusEur;
+    }
+
+    public void setBonusEur(Double bonusEur) {
+        this.bonusEur = bonusEur;
+    }
+
 
     // ========= Utility Methods =========
 
