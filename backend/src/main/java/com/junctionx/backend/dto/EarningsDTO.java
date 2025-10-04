@@ -1,99 +1,104 @@
 package com.junctionx.backend.dto;
 
-// Aided by LLM
+/**
+ * Container DTO with nested types for earnings-related responses.
+ */
 public class EarningsDTO {
 
-    public static class DayTotals {
-        private int jobs;
-        private double netEur;
-        private double tipsEur;
-        private int minutes;
-
-        public DayTotals() {}
-        public DayTotals(int jobs, double netEur, double tipsEur, int minutes) {
-            this.jobs = jobs; this.netEur = netEur; this.tipsEur = tipsEur; this.minutes = minutes;
-        }
-        public int getJobs() { return jobs; }
-        public double getNetEur() { return netEur; }
-        public double getTipsEur() { return tipsEur; }
-        public int getMinutes() { return minutes; }
-        public void setJobs(int jobs) { this.jobs = jobs; }
-        public void setNetEur(double netEur) { this.netEur = netEur; }
-        public void setTipsEur(double tipsEur) { this.tipsEur = tipsEur; }
-        public void setMinutes(int minutes) { this.minutes = minutes; }
-    }
-
+    // ---- day-level compare for a single earner ----
     public static class DayCompare {
-        private String date;
-        private String earnerId;
-        private DayTotals actual;
-        private DayTotals predicted;
-        private double upliftPct;
+        private String date;            // ISO yyyy-MM-dd
+        private double actualGrossEur;
+        private double predictedGrossEur;
+        private double deltaEur;        // predicted - actual
+        private double deltaPct;        // delta / actual * 100
 
         public DayCompare() {}
-        public DayCompare(String date, String earnerId, DayTotals actual, DayTotals predicted, double upliftPct) {
-            this.date = date; this.earnerId = earnerId; this.actual = actual; this.predicted = predicted; this.upliftPct = upliftPct;
+
+        public DayCompare(String date, double actualGrossEur, double predictedGrossEur) {
+            this.date = date;
+            this.actualGrossEur = actualGrossEur;
+            this.predictedGrossEur = predictedGrossEur;
+            this.deltaEur = predictedGrossEur - actualGrossEur;
+            this.deltaPct = actualGrossEur == 0 ? 0 : (this.deltaEur / actualGrossEur) * 100.0;
         }
+
         public String getDate() { return date; }
-        public String getEarnerId() { return earnerId; }
-        public DayTotals getActual() { return actual; }
-        public DayTotals getPredicted() { return predicted; }
-        public double getUpliftPct() { return upliftPct; }
         public void setDate(String date) { this.date = date; }
-        public void setEarnerId(String earnerId) { this.earnerId = earnerId; }
-        public void setActual(DayTotals actual) { this.actual = actual; }
-        public void setPredicted(DayTotals predicted) { this.predicted = predicted; }
-        public void setUpliftPct(double upliftPct) { this.upliftPct = upliftPct; }
+
+        public double getActualGrossEur() { return actualGrossEur; }
+        public void setActualGrossEur(double actualGrossEur) { this.actualGrossEur = actualGrossEur; }
+
+        public double getPredictedGrossEur() { return predictedGrossEur; }
+        public void setPredictedGrossEur(double predictedGrossEur) { this.predictedGrossEur = predictedGrossEur; }
+
+        public double getDeltaEur() { return deltaEur; }
+        public void setDeltaEur(double deltaEur) { this.deltaEur = deltaEur; }
+
+        public double getDeltaPct() { return deltaPct; }
+        public void setDeltaPct(double deltaPct) { this.deltaPct = deltaPct; }
     }
 
+    // ---- rolling average summary for a single earner ----
     public static class RollingAvg {
-        private String earnerId;
-        private int windowDays;
-        private double actualAvgPerDay;
-        private double predictedAvgPerDay;
-        private double upliftPct;
+        private int windowDays;                 // e.g. 28
+        private double actualAvgGrossPerDay;
+        private double predictedAvgGrossPerDay;
+        private double deltaEurPerDay;          // predicted - actual
+        private double deltaPctPerDay;          // delta / actual * 100
 
         public RollingAvg() {}
-        public RollingAvg(String earnerId, int windowDays, double actualAvgPerDay, double predictedAvgPerDay, double upliftPct) {
-            this.earnerId = earnerId; this.windowDays = windowDays; this.actualAvgPerDay = actualAvgPerDay;
-            this.predictedAvgPerDay = predictedAvgPerDay; this.upliftPct = upliftPct;
+
+        public RollingAvg(int windowDays, double actualAvgGrossPerDay, double predictedAvgGrossPerDay) {
+            this.windowDays = windowDays;
+            this.actualAvgGrossPerDay = actualAvgGrossPerDay;
+            this.predictedAvgGrossPerDay = predictedAvgGrossPerDay;
+            this.deltaEurPerDay = predictedAvgGrossPerDay - actualAvgGrossPerDay;
+            this.deltaPctPerDay = actualAvgGrossPerDay == 0 ? 0 : (this.deltaEurPerDay / actualAvgGrossPerDay) * 100.0;
         }
-        public String getEarnerId() { return earnerId; }
+
         public int getWindowDays() { return windowDays; }
-        public double getActualAvgPerDay() { return actualAvgPerDay; }
-        public double getPredictedAvgPerDay() { return predictedAvgPerDay; }
-        public double getUpliftPct() { return upliftPct; }
-        public void setEarnerId(String earnerId) { this.earnerId = earnerId; }
         public void setWindowDays(int windowDays) { this.windowDays = windowDays; }
-        public void setActualAvgPerDay(double v) { this.actualAvgPerDay = v; }
-        public void setPredictedAvgPerDay(double v) { this.predictedAvgPerDay = v; }
-        public void setUpliftPct(double upliftPct) { this.upliftPct = upliftPct; }
+
+        public double getActualAvgGrossPerDay() { return actualAvgGrossPerDay; }
+        public void setActualAvgGrossPerDay(double v) { this.actualAvgGrossPerDay = v; }
+
+        public double getPredictedAvgGrossPerDay() { return predictedAvgGrossPerDay; }
+        public void setPredictedAvgGrossPerDay(double v) { this.predictedAvgGrossPerDay = v; }
+
+        public double getDeltaEurPerDay() { return deltaEurPerDay; }
+        public void setDeltaEurPerDay(double v) { this.deltaEurPerDay = v; }
+
+        public double getDeltaPctPerDay() { return deltaPctPerDay; }
+        public void setDeltaPctPerDay(double v) { this.deltaPctPerDay = v; }
     }
 
+    // ---- region aggregate compare (already referenced by RegionController) ----
     public static class RegionCompare {
-        private String date;
-        private int cityId;
-        private double totalActual;
-        private double totalPredicted;
-        private double upliftPct;
-        private int driversCount;
+        private double actualTotalEur;
+        private double predictedTotalEur;
+        private double upliftEur;               // predicted - actual
+        private double upliftPct;               // uplift / actual * 100
 
         public RegionCompare() {}
-        public RegionCompare(String date, int cityId, double totalActual, double totalPredicted, double upliftPct, int driversCount) {
-            this.date = date; this.cityId = cityId; this.totalActual = totalActual; this.totalPredicted = totalPredicted;
-            this.upliftPct = upliftPct; this.driversCount = driversCount;
+
+        public RegionCompare(double actualTotalEur, double predictedTotalEur) {
+            this.actualTotalEur = actualTotalEur;
+            this.predictedTotalEur = predictedTotalEur;
+            this.upliftEur = predictedTotalEur - actualTotalEur;
+            this.upliftPct = actualTotalEur == 0 ? 0 : (upliftEur / actualTotalEur) * 100.0;
         }
-        public String getDate() { return date; }
-        public int getCityId() { return cityId; }
-        public double getTotalActual() { return totalActual; }
-        public double getTotalPredicted() { return totalPredicted; }
+
+        public double getActualTotalEur() { return actualTotalEur; }
+        public void setActualTotalEur(double v) { this.actualTotalEur = v; }
+
+        public double getPredictedTotalEur() { return predictedTotalEur; }
+        public void setPredictedTotalEur(double v) { this.predictedTotalEur = v; }
+
+        public double getUpliftEur() { return upliftEur; }
+        public void setUpliftEur(double v) { this.upliftEur = v; }
+
         public double getUpliftPct() { return upliftPct; }
-        public int getDriversCount() { return driversCount; }
-        public void setDate(String date) { this.date = date; }
-        public void setCityId(int cityId) { this.cityId = cityId; }
-        public void setTotalActual(double totalActual) { this.totalActual = totalActual; }
-        public void setTotalPredicted(double totalPredicted) { this.totalPredicted = totalPredicted; }
-        public void setUpliftPct(double upliftPct) { this.upliftPct = upliftPct; }
-        public void setDriversCount(int driversCount) { this.driversCount = driversCount; }
+        public void setUpliftPct(double v) { this.upliftPct = v; }
     }
 }

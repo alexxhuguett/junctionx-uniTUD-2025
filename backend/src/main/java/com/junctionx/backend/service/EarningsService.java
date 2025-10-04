@@ -4,9 +4,8 @@ import com.junctionx.backend.dto.EarningsDTO.DayCompare;
 import com.junctionx.backend.dto.EarningsDTO.RollingAvg;
 import com.junctionx.backend.dto.EarningsDTO.RegionCompare;
 
-// Aided by LLM
 public interface EarningsService {
     DayCompare dayCompare(String earnerId, String date);
     RollingAvg rollingAvg(String earnerId, Integer windowDays);
-    RegionCompare regionCompare(int cityId, String date);
+    RegionCompare regionCompare(int dayOffset, String regionCode);
 }

@@ -3,7 +3,6 @@ package com.junctionx.backend.service;
 import com.junctionx.backend.dto.RecommendationDTO;
 import java.util.List;
 
-// Aided by LLM
 public interface RecommendationService {
     List<RecommendationDTO> recommendations(String earnerId, String date, String now);
 }
