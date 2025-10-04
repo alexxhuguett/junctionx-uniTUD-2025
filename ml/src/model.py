@@ -41,6 +41,7 @@ NUMERIC_FEATURES = [
     "distance_km",
     "duration_mins",
     "avg_speed_kmh",
+    "active_minutes_since_rest",
     "hour",
     "weekday",
     "predicted_eph_drop",
