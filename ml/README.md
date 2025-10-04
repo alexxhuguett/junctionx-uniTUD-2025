@@ -37,8 +37,30 @@ List rides with ratings:
     --model junctionx-uniTUD-2025/ml/artifacts/model.pkl \
     --top 20
 
+Serve predictions (HTTP)
+- Install Flask:
+  python3 -m pip install flask
+
+- Run server (from project root):
+  PYTHONPATH=junctionx-uniTUD-2025 python3 -m ml.server \
+    --excel junctionx-uniTUD-2025/ml/data/uber_hackathon_v2_mock_data.xlsx \
+    --model junctionx-uniTUD-2025/ml/artifacts/model.pkl \
+    --host 0.0.0.0 --port 8000
+
+- Endpoints:
+  GET http://localhost:8000/health
+  GET http://localhost:8000/prediction/<ride_id>
+  GET http://localhost:8000/prediction/top/<n>
+
 Notes
 - If scikit-learn is unavailable, training falls back to a no-op model; you can
   still compute labels directly or install sklearn to enable training.
 - Destination opportunity uses `heatmap.predicted_eph` at the drop hex.
 - Fatigue uses cumulative minutes driven since the last >=15m gap.
+
+Schema tools
+- Print the model feature schema as JSON:
+  PYTHONPATH=junctionx-uniTUD-2025 python3 -m ml.tools.schema --print
+
+- Validate a CSV file against the schema (all columns present and basic types):
+  PYTHONPATH=junctionx-uniTUD-2025 python3 -m ml.tools.schema --validate-csv path/to/features.csv
