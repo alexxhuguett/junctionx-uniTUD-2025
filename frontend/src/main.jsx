@@ -4,7 +4,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App.jsx'
 import User from './pages/User.jsx'
 import Dev from './pages/Dev.jsx'
-import './index.css'
+import './stylesheets/index.css'
+import MapPlaceholder from "./components/MapPlaceholder.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path="/" element={<App />} />
                 <Route path="/user" element={<User />} />
                 <Route path="/dev" element={<Dev />} />
+                <Route path="/map" element={<MapPlaceholder />} />
             </Routes>
         </BrowserRouter>
     </StrictMode>
