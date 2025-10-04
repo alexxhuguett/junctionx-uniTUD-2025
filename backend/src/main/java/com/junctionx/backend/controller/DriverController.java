@@ -1,73 +1,37 @@
 package com.junctionx.backend.controller;
 
-import com.junctionx.backend.dto.EarningsDTO.DayCompare;
-import com.junctionx.backend.dto.EarningsDTO.RollingAvg;
-import com.junctionx.backend.dto.GeoJson.FeatureCollection;
-import com.junctionx.backend.dto.QualityDTO;
-import com.junctionx.backend.dto.RecommendationDTO;
-import com.junctionx.backend.service.*;
+import com.junctionx.backend.dto.GeoJson;
+import com.junctionx.backend.service.DriverTripsService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.time.LocalDate;
 
-// Aided by LLM
 @RestController
 @RequestMapping("/api/driver")
 public class DriverController {
 
     private final DriverTripsService driverTripsService;
-    private final EarningsService earningsService;
-    private final RecommendationService recommendationService;
-    private final QualityService qualityService;
 
-    public DriverController(DriverTripsService driverTripsService,
-                            EarningsService earningsService,
-                            RecommendationService recommendationService,
-                            QualityService qualityService) {
+    public DriverController(DriverTripsService driverTripsService) {
         this.driverTripsService = driverTripsService;
-        this.earningsService = earningsService;
-        this.recommendationService = recommendationService;
-        this.qualityService = qualityService;
     }
 
-    @GetMapping("/{earnerId}/trips")
-    public FeatureCollection driverTrips(@PathVariable String earnerId,
-                                         @RequestParam String date,
-                                         @RequestParam(required = false) Integer page,
-                                         @RequestParam(required = false) Integer size) {
-        return driverTripsService.actualTrips(earnerId, date, page, size);
+    // GET /api/driver/{driverId}/trips?date=YYYY-MM-DD
+    @GetMapping("/{driverId}/trips")
+    public ResponseEntity<GeoJson.FeatureCollection> getTrips(
+            @PathVariable String driverId,
+            @RequestParam String date) {
+        LocalDate d = LocalDate.parse(date);
+        return ResponseEntity.ok(driverTripsService.getTrips(driverId, d));
     }
 
-    @GetMapping("/{earnerId}/trips/counterfactual")
-    public FeatureCollection driverTripsCf(@PathVariable String earnerId,
-                                           @RequestParam String date,
-                                           @RequestParam(required = false) Integer page,
-                                           @RequestParam(required = false) Integer size) {
-        return driverTripsService.counterfactualTrips(earnerId, date, page, size);
-    }
-
-    @GetMapping("/{earnerId}/earnings/day")
-    public DayCompare earningsDay(@PathVariable String earnerId,
-                                  @RequestParam String date) {
-        return earningsService.dayCompare(earnerId, date);
-    }
-
-    @GetMapping("/{earnerId}/earnings/avg")
-    public RollingAvg earningsAvg(@PathVariable String earnerId,
-                                  @RequestParam(defaultValue = "28") Integer windowDays) {
-        return earningsService.rollingAvg(earnerId, windowDays);
-    }
-
-    @GetMapping("/{earnerId}/recommendations")
-    public List<RecommendationDTO> recommendations(@PathVariable String earnerId,
-                                                   @RequestParam String date,
-                                                   @RequestParam(required = false) String now) {
-        return recommendationService.recommendations(earnerId, date, now);
-    }
-
-    @GetMapping("/{earnerId}/quality")
-    public QualityDTO quality(@PathVariable String earnerId,
-                              @RequestParam String date) {
-        return qualityService.quality(earnerId, date);
+    // GET /api/driver/{driverId}/counterfactual-trips?date=YYYY-MM-DD
+    @GetMapping("/{driverId}/counterfactual-trips")
+    public ResponseEntity<GeoJson.FeatureCollection> getCounterfactualTrips(
+            @PathVariable String driverId,
+            @RequestParam String date) {
+        LocalDate d = LocalDate.parse(date);
+        return ResponseEntity.ok(driverTripsService.getCounterfactualTrips(driverId, d));
     }
 }
