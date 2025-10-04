@@ -29,9 +29,15 @@ try:
 except Exception as e:  # pragma: no cover
     raise SystemExit("Flask is required. Install with: python3 -m pip install flask")
 
+# requests is optional; used to fetch external features from Java backend if configured
+try:  # pragma: no cover
+    import requests  # type: ignore
+except Exception:
+    requests = None  # type: ignore
+
 from .src.data_loader import load_and_prepare
 from .src.features import finalize_feature_table
-from .src.model import RideScoringModel
+from .src.model import RideScoringModel, NUMERIC_FEATURES, CATEGORICAL_FEATURES
 
 
 app = Flask(__name__)
@@ -41,6 +47,8 @@ app = Flask(__name__)
 class ServingState:
     excel_path: Path
     model_path: Path
+    rides_base: Optional[str]
+    model: RideScoringModel
     df: pd.DataFrame
     X: pd.DataFrame
     preds: np.ndarray
@@ -50,7 +58,7 @@ class ServingState:
 STATE: Optional[ServingState] = None
 
 
-def load_state(excel_path: Path, model_path: Path) -> ServingState:
+def load_state(excel_path: Path, model_path: Path, rides_base: Optional[str]) -> ServingState:
     df = load_and_prepare(str(excel_path))
     X = finalize_feature_table(df)
     model = RideScoringModel.load(model_path)
@@ -61,11 +69,40 @@ def load_state(excel_path: Path, model_path: Path) -> ServingState:
     return ServingState(
         excel_path=excel_path,
         model_path=model_path,
+        rides_base=rides_base,
+        model=model,
         df=df,
         X=X,
         preds=preds,
         index_by_ride=index_by_ride,
     )
+
+
+def _fetch_external_features(ride_id: str) -> Optional[dict]:
+    """Try to fetch a feature row from an external rides service.
+
+    Expects a GET endpoint that returns a JSON object with model-ready columns.
+    Returns None if not configured, requests is unavailable, or not found.
+    """
+    if STATE is None or not STATE.rides_base:
+        return None
+    if requests is None:
+        return None
+    base = STATE.rides_base.rstrip("/")
+    url = f"{base}/{ride_id}"
+    try:
+        resp = requests.get(url, timeout=2.5)
+        if resp.status_code == 200:
+            data = resp.json()
+            # Some services may return null
+            if data is None:
+                return None
+            if not isinstance(data, dict):
+                return None
+            return data
+        return None
+    except Exception:
+        return None
 
 
 @app.route("/health", methods=["GET"])
@@ -78,11 +115,23 @@ def predict_one(ride_id: str) -> Any:
     global STATE
     if STATE is None:
         abort(503, description="Model not loaded")
+    # 1) Try external features (Java backend) if configured
+    features = _fetch_external_features(str(ride_id))
+    if features is not None:
+        # Build one-row DataFrame with expected columns
+        cols = CATEGORICAL_FEATURES + NUMERIC_FEATURES
+        row = {c: features.get(c) for c in cols}
+        X_one = pd.DataFrame([row], columns=cols)
+        pred = STATE.model.predict(X_one)
+        rating = float(pred[0])
+        return jsonify({"ride_id": ride_id, "rating": rating, "source": "external"})
+
+    # 2) Fallback to preloaded Excel rows
     idx = STATE.index_by_ride.get(str(ride_id))
     if idx is None:
         abort(404, description="ride_id not found")
     rating = float(STATE.preds[idx])
-    return jsonify({"ride_id": ride_id, "rating": rating})
+    return jsonify({"ride_id": ride_id, "rating": rating, "source": "excel"})
 
 
 @app.route("/prediction/top/<int:n>", methods=["GET"])
@@ -117,15 +166,15 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Serve ride rating predictions")
     ap.add_argument("--excel", required=True, help="Path to Excel dataset")
     ap.add_argument("--model", required=True, help="Path to saved model.pkl")
+    ap.add_argument("--rides-base", help="Optional base URL for an external rides service (e.g., http://localhost:8080/api/rides)")
     ap.add_argument("--host", default="127.0.0.1", help="Host address (default 127.0.0.1)")
     ap.add_argument("--port", type=int, default=8000, help="Port (default 8000)")
     args = ap.parse_args()
 
     global STATE
-    STATE = load_state(Path(args.excel), Path(args.model))
+    STATE = load_state(Path(args.excel), Path(args.model), args.rides_base)
     app.run(host=args.host, port=args.port, debug=False)
 
 
 if __name__ == "__main__":
     main()
-
