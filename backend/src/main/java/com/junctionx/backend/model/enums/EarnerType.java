@@ -1,4 +1,0 @@
-enum FuelType {
-    DRIVER,
-    COURIER
-}

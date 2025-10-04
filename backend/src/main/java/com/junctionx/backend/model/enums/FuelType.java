@@ -1,5 +1,9 @@
-enum FuelType {
-    EV,
+package com.junctionx.backend.model.enums;
+
+public enum FuelType {
     GAS,
-    HYBRID
+    HYBRID,
+    EV,
+    NONE
 }
+

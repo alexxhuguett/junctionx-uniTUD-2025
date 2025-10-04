@@ -1,5 +1,7 @@
-enum VehicleType {
+package com.junctionx.backend.model.enums;
+
+public enum VehicleType {
     CAR,
-    SCOOTER,
-    BIKE
+    BIKE,
+    SCOOTER
 }
