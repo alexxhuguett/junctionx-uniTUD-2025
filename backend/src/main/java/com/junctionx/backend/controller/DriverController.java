@@ -29,7 +29,7 @@ public class DriverController {
         this.qualityService = qualityService;
     }
 
-    // ✅ Trips — actual
+    // Trips — actual
     @GetMapping("/{earnerId}/trips")
     public GeoJson.FeatureCollection driverTrips(@PathVariable String earnerId,
                                                  @RequestParam String date,
@@ -38,7 +38,7 @@ public class DriverController {
         return driverTripsService.actualTrips(earnerId, date, page, size);
     }
 
-    // ✅ Trips — counterfactual
+    // Trips — counterfactual
     @GetMapping("/{earnerId}/trips/counterfactual")
     public GeoJson.FeatureCollection driverTripsCf(@PathVariable String earnerId,
                                                    @RequestParam String date,
@@ -47,21 +47,21 @@ public class DriverController {
         return driverTripsService.counterfactualTrips(earnerId, date, page, size);
     }
 
-    // ✅ Earnings — day comparison
+    // Earnings — day comparison
     @GetMapping("/{earnerId}/earnings/day")
     public DayCompare earningsDay(@PathVariable String earnerId,
                                   @RequestParam String date) {
         return earningsService.dayCompare(earnerId, date);
     }
 
-    // ✅ Earnings — rolling average
+    // Earnings — rolling average
     @GetMapping("/{earnerId}/earnings/avg")
     public RollingAvg earningsAvg(@PathVariable String earnerId,
                                   @RequestParam(defaultValue = "28") Integer windowDays) {
         return earningsService.rollingAvg(earnerId, windowDays);
     }
 
-    // ✅ Recommendations
+    // Recommendations
     @GetMapping("/{earnerId}/recommendations")
     public List<RecommendationDTO> recommendations(@PathVariable String earnerId,
                                                    @RequestParam String date,
@@ -69,7 +69,7 @@ public class DriverController {
         return recommendationService.recommendations(earnerId, date, now);
     }
 
-    // ✅ Quality
+    // Quality
     @GetMapping("/{earnerId}/quality")
     public QualityDTO quality(@PathVariable String earnerId,
                               @RequestParam String date) {
