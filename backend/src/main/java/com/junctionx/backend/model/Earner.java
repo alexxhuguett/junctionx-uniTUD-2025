@@ -1,5 +1,6 @@
 package com.junctionx.backend.model;
 
+import com.junctionx.backend.model.enums.EarnerType;
 import com.junctionx.backend.model.enums.FuelType;
 import com.junctionx.backend.model.enums.VehicleType;
 import jakarta.persistence.*;
@@ -18,7 +19,13 @@ public class Earner {
 
     @Id
     @Column(name = "earner_id", nullable = false, updatable = false, length = 16)
-    private String earner_id;
+    private String earnerId;
+
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "earner_type", nullable = false, length = 16)
+    private EarnerType earnerType;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "vehicle_type", nullable = false, length = 16)
@@ -38,8 +45,8 @@ public class Earner {
      * Home Integer reference (FK to Integer.id). If you don’t have a Integer entity yet,
      * temporarily switch this to an Integer `homeIntegerId`.
      */
-    @Column(name = "home_Integer_id", nullable = false)
-    private Integer homeInteger;
+    @Column(name = "home_city_id", nullable = false)
+    private Integer homeCityId;
 
     /**
      * All jobs this earner fulfilled (rides or deliveries).
@@ -59,32 +66,81 @@ public class Earner {
     protected Earner() { }
 
     public Earner(String id, VehicleType vehicleType, FuelType fuelType,
-                  Double rating, Integer homeInteger) {
-        this.earner_id = id;
+                  Double rating, Integer homeCityId) {
+        this.earnerId = id;
         this.vehicleType = vehicleType;
         this.fuelType = fuelType;
         this.rating = rating;
-        this.homeInteger = homeInteger;
+        this.homeCityId = homeCityId;
     }
 
     // ========= Getters/Setters =========
-    public String getId() { return earner_id; }
-    public void setId(String id) { this.earner_id = id; }
 
-    public VehicleType getVehicleType() { return vehicleType; }
-    public void setVehicleType(VehicleType vehicleType) { this.vehicleType = vehicleType; }
 
-    public FuelType getFuelType() { return fuelType; }
-    public void setFuelType(FuelType fuelType) { this.fuelType = fuelType; }
+    public String getEarnerId() {
+        return earnerId;
+    }
 
-    public Double getRating() { return rating; }
-    public void setRating(Double rating) { this.rating = rating; }
+    public void setEarnerId(String earnerId) {
+        this.earnerId = earnerId;
+    }
 
-    public Integer getHomeInteger() { return homeInteger; }
-    public void setHomeInteger(Integer homeInteger) { this.homeInteger = homeInteger; }
+    public EarnerType getEarnerType() {
+        return earnerType;
+    }
 
-    public Set<Job> getJobs() { return jobs; }
-    public Set<IncentiveWeekly> getIncentives() { return incentives; }
+
+    public void setEarnerType(EarnerType earnerType) {
+        this.earnerType = earnerType;
+    }
+
+    public VehicleType getVehicleType() {
+        return vehicleType;
+    }
+
+    public void setVehicleType(VehicleType vehicleType) {
+        this.vehicleType = vehicleType;
+    }
+
+    public FuelType getFuelType() {
+        return fuelType;
+    }
+
+    public void setFuelType(FuelType fuelType) {
+        this.fuelType = fuelType;
+    }
+
+    public Double getRating() {
+        return rating;
+    }
+
+    public void setRating(Double rating) {
+        this.rating = rating;
+    }
+
+    public Integer getHomeCityId() {
+        return homeCityId;
+    }
+
+    public void setHomeCityId(Integer homeInteger) {
+        this.homeCityId = homeInteger;
+    }
+
+    public Set<Job> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(Set<Job> jobs) {
+        this.jobs = jobs;
+    }
+
+    public Set<IncentiveWeekly> getIncentives() {
+        return incentives;
+    }
+
+    public void setIncentives(Set<IncentiveWeekly> incentives) {
+        this.incentives = incentives;
+    }
 
     // ========= Equality by ID =========
     @Override
@@ -92,7 +148,7 @@ public class Earner {
         if (this == o) return true;
         if (!(o instanceof Earner)) return false;
         Earner other = (Earner) o;
-        return earner_id != null && earner_id.equals(other.earner_id);
+        return earnerId != null && earnerId.equals(other.earnerId);
     }
 
     @Override

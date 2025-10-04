@@ -1,7 +1,7 @@
 package com.junctionx.backend.model;
 
-import com.junctionx.backend.model.enums.FulfillmentStatus;
-import com.junctionx.backend.model.enums.Marketplace;
+
+import com.junctionx.backend.model.enums.ProductType;
 import jakarta.persistence.*;
 
 import java.lang.Double;
@@ -36,7 +36,7 @@ public class Job {
 
     /** Home/operating city for this job (FK). */
     @Column(name = "city_id", nullable = false)
-    private Integer city;
+    private Integer cityId;
 
     // ---- Identity on the demand side ----
 
@@ -52,16 +52,15 @@ public class Job {
     // ---- Classification ----
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "marketplace", nullable = false, length = 16)
-    private Marketplace marketplace; // RIDESHARING or DELIVERY
+    @Column(name = "product_type", nullable = false, length = 16)
+    private ProductType productType; // RIDESHARING or DELIVERY
 
     /** UberX, UberGreen, UberPool, Eats-Delivery, ... */
     @Column(name = "product", length = 32, nullable = false)
     private String product;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "fulfillment_job_status", nullable = false, length = 16)
-    private FulfillmentStatus fulfillmentJobStatus; // COMPLETED, CANCELED, ...
+    @Column(name = "fulfillment_job_status", nullable = false)
+    private Boolean isCompleted;
 
     // ---- Time window ----
 
@@ -96,10 +95,10 @@ public class Job {
     private String dropHexId9;
 
     // ---- Effort ----
-    
+
     @Column(name = "distance_km")
     private Double distanceKm;
-    
+
     @Column(name = "duration_mins")
     private Integer durationMins;
 
@@ -119,11 +118,11 @@ public class Job {
 
     public Job(String id,
                Earner driver,
-               Integer city,
+               Integer cityId,
                String requesterId,
-               Marketplace marketplace,
+               ProductType productType,
                String product,
-               FulfillmentStatus fulfillmentJobStatus,
+               Boolean isCompleted,
                OffsetDateTime startTime,
                OffsetDateTime endTime,
                Double pickupLat, Double pickupLon, String pickupHexId9,
@@ -133,11 +132,11 @@ public class Job {
 
         this.id = id;
         this.driver = driver;
-        this.city = city;
+        this.cityId = cityId;
         this.requesterId = requesterId;
-        this.marketplace = marketplace;
+        this.productType = productType;
         this.product = product;
-        this.fulfillmentJobStatus = fulfillmentJobStatus;
+        this.isCompleted = isCompleted;
         this.startTime = startTime;
         this.endTime = endTime;
         this.pickupLat = pickupLat;
@@ -153,61 +152,150 @@ public class Job {
 
     // ========= Getters/Setters =========
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-
-    public Earner getDriver() { return driver; }
-    public void setDriver(Earner driver) { this.driver = driver; }
-
-    public Integer getCity() { return city; }
-    public void setCity(Integer city) { this.city = city; }
-
-    public String getRequesterId() { return requesterId; }
-    public void setRequesterId(String requesterId) { this.requesterId = requesterId; }
-
-    public Marketplace getMarketplace() { return marketplace; }
-    public void setMarketplace(Marketplace marketplace) { this.marketplace = marketplace; }
-
-    public String getProduct() { return product; }
-    public void setProduct(String product) { this.product = product; }
-
-    public FulfillmentStatus getFulfillmentJobStatus() { return fulfillmentJobStatus; }
-    public void setFulfillmentJobStatus(FulfillmentStatus fulfillmentJobStatus) {
-        this.fulfillmentJobStatus = fulfillmentJobStatus;
+    public String getId() {
+        return id;
     }
 
-    public OffsetDateTime getStartTime() { return startTime; }
-    public void setStartTime(OffsetDateTime startTime) { this.startTime = startTime; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public OffsetDateTime getEndTime() { return endTime; }
-    public void setEndTime(OffsetDateTime endTime) { this.endTime = endTime; }
+    public Earner getDriver() {
+        return driver;
+    }
 
-    public Double getPickupLat() { return pickupLat; }
-    public void setPickupLat(Double pickupLat) { this.pickupLat = pickupLat; }
+    public void setDriver(Earner driver) {
+        this.driver = driver;
+    }
 
-    public Double getPickupLon() { return pickupLon; }
-    public void setPickupLon(Double pickupLon) { this.pickupLon = pickupLon; }
+    public Integer getCityId() {
+        return cityId;
+    }
 
-    public String getPickupHexId9() { return pickupHexId9; }
-    public void setPickupHexId9(String pickupHexId9) { this.pickupHexId9 = pickupHexId9; }
+    public void setCityId(Integer cityId) {
+        this.cityId = cityId;
+    }
 
-    public Double getDropLat() { return dropLat; }
-    public void setDropLat(Double dropLat) { this.dropLat = dropLat; }
+    public String getRequesterId() {
+        return requesterId;
+    }
 
-    public Double getDropLon() { return dropLon; }
-    public void setDropLon(Double dropLon) { this.dropLon = dropLon; }
+    public void setRequesterId(String requesterId) {
+        this.requesterId = requesterId;
+    }
 
-    public String getDropHexId9() { return dropHexId9; }
-    public void setDropHexId9(String dropHexId9) { this.dropHexId9 = dropHexId9; }
+    public ProductType getProductType() {
+        return productType;
+    }
 
-    public Double getDistanceKm() { return distanceKm; }
-    public void setDistanceKm(Double distanceKm) { this.distanceKm = distanceKm; }
+    public void setProductType(ProductType productType) {
+        this.productType = productType;
+    }
 
-    public Integer getDurationMins() { return durationMins; }
-    public void setDurationMins(Integer durationMins) { this.durationMins = durationMins; }
+    public String getProduct() {
+        return product;
+    }
 
-    public Double getNetEarnings() { return netEarnings; }
-    public void setNetEarnings(Double netEarnings) { this.netEarnings = netEarnings; }
+    public void setProduct(String product) {
+        this.product = product;
+    }
+
+    public OffsetDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(OffsetDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Boolean getisCompleted() {
+        return isCompleted;
+    }
+
+    public void setIsCompleted(Boolean completed) {
+        isCompleted = completed;
+    }
+
+    public OffsetDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(OffsetDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public Double getPickupLat() {
+        return pickupLat;
+    }
+
+    public void setPickupLat(Double pickupLat) {
+        this.pickupLat = pickupLat;
+    }
+
+    public String getPickupHexId9() {
+        return pickupHexId9;
+    }
+
+    public void setPickupHexId9(String pickupHexId9) {
+        this.pickupHexId9 = pickupHexId9;
+    }
+
+    public Double getPickupLon() {
+        return pickupLon;
+    }
+
+    public void setPickupLon(Double pickupLon) {
+        this.pickupLon = pickupLon;
+    }
+
+    public Double getDropLat() {
+        return dropLat;
+    }
+
+    public void setDropLat(Double dropLat) {
+        this.dropLat = dropLat;
+    }
+
+    public Double getDropLon() {
+        return dropLon;
+    }
+
+    public void setDropLon(Double dropLon) {
+        this.dropLon = dropLon;
+    }
+
+    public String getDropHexId9() {
+        return dropHexId9;
+    }
+
+    public void setDropHexId9(String dropHexId9) {
+        this.dropHexId9 = dropHexId9;
+    }
+
+    public Double getDistanceKm() {
+        return distanceKm;
+    }
+
+    public void setDistanceKm(Double distanceKm) {
+        this.distanceKm = distanceKm;
+    }
+
+    public Integer getDurationMins() {
+        return durationMins;
+    }
+
+    public void setDurationMins(Integer durationMins) {
+        this.durationMins = durationMins;
+    }
+
+    public Double getNetEarnings() {
+        return netEarnings;
+    }
+
+    public void setNetEarnings(Double netEarnings) {
+        this.netEarnings = netEarnings;
+    }
+
 
     // ========= Equality by ID =========
 
