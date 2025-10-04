@@ -1,4 +1,4 @@
-package com.junctionx.backend.api;
+package com.junctionx.backend.controller;
 
 import com.junctionx.backend.dto.EarningsDTO.DayCompare;
 import com.junctionx.backend.dto.EarningsDTO.RollingAvg;
