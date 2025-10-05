@@ -2,6 +2,7 @@ import MapPlaceholder from "../components/MapPlaceholder.jsx";
 import Dashboard from "../components/Dashboard.jsx";
 import DriverMap from "../components/DriverMap.jsx";
 import TwoPane from "../components/TwoPane.jsx";
+import DemoControls from "../components/DemoControls.jsx";
 
 export default function User() {
     return (

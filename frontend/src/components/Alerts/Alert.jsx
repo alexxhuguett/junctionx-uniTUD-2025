@@ -1,7 +1,14 @@
-import "../../stylesheets/alert.css"
+import AlertCard from "./AlertCard.jsx";
 
-export default function Alert({message}) {
+export default function Alert({ message, onClose }) {
     return (
-        <div class="alert" role="alert">{message}</div>
-    )
+        <AlertCard
+            variant="info"
+            title="Heads up"
+            message={message}
+            acceptLabel="OK"
+            showAccept={false}
+            onClose={onClose}
+        />
+    );
 }

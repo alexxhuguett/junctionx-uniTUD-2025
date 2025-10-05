@@ -1,22 +1,149 @@
-.alert {
-    color: black;
-    background-color: #ffe4b5;
-    border-left: 5px solid #ffae00;
-    padding: 10px 14px;
-    border-radius: 8px;
-    margin-top: 8px;
-    animation: fadeOut 0.5s ease forwards;
-    animation-delay: 4.5s; /* start fading before removal */
-
-    width: 200px;
-    height: 50px;
-    align-self: center;
-    justify-self: flex-end;
+/* Stack container (apply to your #alertContainer) */
+.alert-stack {
+    position: absolute; /* make sure #mapContainer is position:relative */
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    pointer-events: none; /* lets clicks pass through except on cards */
 }
 
-button {
-    width: 80px;
+/* Base card */
+.alert-card {
+    --bg: #fffaf1;
+    --fg: #2b2b2b;
+    --accent: #ffb757;
+    --border: rgba(0,0,0,.06);
 
+    pointer-events: auto; /* clickable inside */
+    width: 280px;
+    max-width: 80vw;
+    background: var(--bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow:
+            0 10px 18px rgba(0,0,0,.08),
+            0 2px 6px rgba(0,0,0,.06);
+    overflow: hidden;
+    animation: alert-enter .25s ease-out both;
+}
+
+/* Left accent bar */
+.alert-card::before {
+    content: "";
+    display: block;
+    width: 6px;
+    background: linear-gradient(180deg, var(--accent), #ffd89c);
+    position: absolute;
+    left: 0;
+    top: 0; bottom: 0;
+}
+
+/* Layout */
+.alert-inner {
+    position: relative;
+    padding: 12px 14px 12px 16px;
+    margin-left: 6px; /* offset for accent bar */
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    grid-template-areas:
+    "icon title close"
+    "icon body  body"
+    "icon actions actions";
+    gap: 8px 10px;
+}
+
+.alert-icon {
+    grid-area: icon;
+    width: 28px; height: 28px;
+    display: grid; place-items: center;
+    border-radius: 8px;
+    background: rgba(0,0,0,.04);
+}
+
+.alert-title {
+    grid-area: title;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: .2px;
+}
+
+.alert-body {
+    grid-area: body;
+    font-size: 13.5px;
+    line-height: 1.35;
+    opacity: .9;
+}
+
+.alert-actions {
+    grid-area: actions;
+    display: flex;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.alert-close {
+    grid-area: close;
+    background: transparent;
+    border: 0;
+    font-size: 18px;
+    line-height: 1;
+    opacity: .55;
+    cursor: pointer;
+    transition: opacity .15s ease;
+}
+.alert-close:hover { opacity: .85; }
+
+/* Buttons */
+.btn {
+    appearance: none;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: transform .03s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+}
+.btn:active { transform: translateY(1px); }
+
+.btn-primary {
+    background: #2b6cff;
+    color: #fff;
+    box-shadow: 0 6px 12px rgba(43,108,255,.25);
+}
+.btn-primary:hover { box-shadow: 0 8px 16px rgba(43,108,255,.28); }
+
+.btn-ghost {
+    background: #fff;
+    color: #2b2b2b;
+    border-color: rgba(0,0,0,.12);
+}
+.btn-ghost:hover { background: #f7f7f7; }
+
+/* Variants */
+.alert-card[data-variant="break"] {
+    --bg: #fff6e8;
+    --accent: #ffb757;
+}
+
+.alert-card[data-variant="ride"] {
+    --bg: #eef5ff;
+    --accent: #87a9ff;
+}
+
+.alert-card[data-variant="info"] {
+    --bg: #f7f7f8;
+    --accent: #b4b7c2;
+}
+
+/* Entrance animation */
+@keyframes alert-enter {
+    from { opacity: 0; transform: translateY(-8px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeOut {
