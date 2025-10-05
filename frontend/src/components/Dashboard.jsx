@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../stylesheets/dashboard.css";
 
+import {sessions} from "../api/sessions.js";
+
 export default function Dashboard() {
     const [started, setStarted] = useState(false);
     const [startTime, setStartTime] = useState(null);

@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './stylesheets/App.css';
 import logoUrl from './assets/logo.png';
+import { setUser } from './lib/userStore'; // 👈 add this
 
 export default function App() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    async function handleSubmit(e) {
+    function handleSubmit(e) {
         e.preventDefault();
+        // (do auth here if needed)
+        setUser({ username });
 
-        navigate('/user', { replace: true }); // use replace:false if you want Back to return here
+        navigate('/user', { replace: true });
     }
 
     const canSubmit = username.trim() !== '' && password.trim() !== '';
