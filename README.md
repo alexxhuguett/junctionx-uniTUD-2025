@@ -1,3 +1,19 @@
+# How to run the project
+
+Spring boot :
+./mvnw clean compile -DskipTests
+./mvnw spring-boot:run
+
+Frontend :
+npm install
+npm run dev
+
+ML :
+./dev-up.sh
+python3 -m ml.server \
+    --excel junctionx-uniTUD-2025/ml/data/uber_hackathon_v2_mock_data.xlsx \
+    --model junctionx-uniTUD-2025/ml/artifacts/model.pkl \
+    --host 0.0.0.0 --port 8000
 
 
 # 🛠️ Project Setup – Docker + PostgreSQL + pgAdmin + Spring Boot
@@ -335,5 +351,6 @@ Expected output:
 🎉 ALL CHECKS PASSED — System is ready!
 
 4. DB reset with seed.sql for clean start
+
 
 ./scripts/reset_db.sh
