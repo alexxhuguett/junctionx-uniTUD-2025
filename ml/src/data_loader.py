@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 
 import pandas as pd
+from sqlalchemy import create_engine
 
 
 @dataclass
@@ -180,4 +181,15 @@ def load_and_prepare(path: str) -> pd.DataFrame:
     df = base_join(raw.rides, raw.earners)
     df = attach_destination_context(df, raw.heatmap, raw.cancellation_rates)
     df = attach_temporal_context(df, raw.weather_daily)
+    return df
+
+
+def load_postgres_view(conn_str: str, view: str = "public.v_ride_features") -> pd.DataFrame:
+    """Load model-ready rows from a Postgres view.
+
+    Expects the view to expose the columns used by features and labeling, e.g.
+    the `v_ride_features` view created from the provided SQL.
+    """
+    eng = create_engine(conn_str)
+    df = pd.read_sql(f"SELECT * FROM {view}", eng)
     return df

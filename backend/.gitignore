@@ -1,4 +1,4 @@
-HELP.md
+SPRING_PROFILES_ACTIVE=import ./mvnw spring-boot:runHELP.md
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
