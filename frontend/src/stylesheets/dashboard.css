@@ -1,4 +1,151 @@
-#dashboard {
+/* Root wrapper: fill the side panel, center content, allow a neat card */
+.db-root {
     height: 100%;
-    width: 25%;
+    width: 100%;
+    padding: 0.8rem;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+
+    background: transparent;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    color: #111827;
+}
+
+/* The card that holds the metrics */
+.db-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+
+    background: #161629;
+    border: 0 solid #09091a;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(17, 24, 39, 0.08);
+
+    padding: 1rem;
+    gap: 1rem;
+}
+
+/* Center content when in start state */
+.db-card--center {
+    align-items: center;   /* horizontal centering */
+    justify-content: center; /* vertical centering */
+    text-align: center;
+}
+
+/* Metrics stack: vertical for a narrow panel */
+.stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: flex-start;
+
+    flex: 1;
+    min-height: 0;
+}
+
+/* Each metric block */
+.metric {
+    width: 100%;
+    max-width: 480px;
+    text-align: center;
+
+    background: #09091a;
+    border: 0 solid #0b0b1f;
+    border-radius: 12px;
+    padding: 0.75rem 0.9rem;
+}
+
+/* Typography tuned for a 25% column; clamp keeps it readable across sizes */
+.metric-label {
+    font-size: clamp(0.8rem, 1.1vw, 1rem);
+    line-height: 1.2;
+    color: #a1a1b5;
+    margin-bottom: 0.25rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+}
+
+.metric-value {
+    font-size: clamp(1.1rem, 1.6vw, 1.6rem);
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Actions pinned to the bottom of the card */
+.actions {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 0.25rem;
+}
+
+/* Buttons — reset UA/framework styles + sizing */
+.btn {
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    box-shadow: none;
+    border: none;
+    border-radius: 12px;
+    padding: 0.65rem 1rem;
+    font-size: clamp(0.95rem, 1.2vw, 1.05rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.04s ease, filter 0.2s ease;
+    min-width: 40%;
+    text-align: center;
+    -webkit-tap-highlight-color: transparent; /* no blue flash on mobile */
+}
+
+.btn:hover { filter: brightness(0.95); } /* consistent hover */
+.btn:focus,
+.btn:focus-visible,
+.btn:active {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+/* Start (initial state) — centered horizontally */
+.btn-start {
+    width: 70%;
+    align-self: center;     /* centers within flex container */
+    margin: 0 auto;         /* extra guarantee */
+    background: #77dd77;
+    color: #ffffff;
+}
+
+/* Break / Resume — pastel oranges */
+.btn-break {
+    background: #ffd89a; /* soft pastel orange */
+    color: #1f2937;
+}
+.btn-resume {
+    background: #ffbd6b; /* a touch deeper when resuming */
+    color: #1f2937;
+}
+
+/* Stop — calm red */
+.btn-stop {
+    background: #ef7070;
+    color: #ffffff;
+}
+
+/* Time Since Break color thresholds */
+.tsb-orange { color: #ffbd6b !important; } /* same as resume/orange */
+.tsb-red    { color: #ef7070 !important; } /* same as stop red */
+
+
+/* Small widths */
+@media (max-width: 360px) {
+    .metric { padding: 0.6rem 0.7rem; }
+    .actions { gap: 0.5rem; }
+    .btn { min-width: 42%; padding: 0.55rem 0.8rem; }
 }
