@@ -1,4 +1,4 @@
-package com.junctionx.backend.controllers;
+package com.junctionx.backend.controller;
 
 import com.junctionx.backend.sim.BaselineService;
 import com.junctionx.backend.sim.dto.BaselineMetrics;

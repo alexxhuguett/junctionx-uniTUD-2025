@@ -8,3 +8,43 @@ node_modules/
 *.log
 dist/
 .vite/
+# OS
+.DS_Store
+Thumbs.db
+
+# Python virtualenvs and build artifacts
+.venv/
+venv/
+ENV/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+.pytest_cache/
+.mypy_cache/
+
+# ML artifacts and logs
+logs/
+.pids/
+*.log
+ml/artifacts/
+
+# Node (common folders if present)
+frontend/node_modules/
+web/node_modules/
+ui/node_modules/
+app/node_modules/
+client/node_modules/
+
+# Java build output
+backend/target/
+
+# IDE/editor
+.vscode/
+.idea/
+
+# Env files (if any)
+.env
+.env.*

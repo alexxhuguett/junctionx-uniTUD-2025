@@ -1,6 +1,6 @@
-package com.junctionx.backend.controllers;
+package com.junctionx.backend.controller;
 
-import com.junctionx.backend.model.repository.JobsReadRepository;
+import com.junctionx.backend.repository.JobsReadRepository;
 import com.junctionx.backend.sim.dto.TripDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
