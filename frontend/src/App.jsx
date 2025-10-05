@@ -1,25 +1,50 @@
-import { Link } from 'react-router-dom'
-import Alert from "./components/Alerts/Alert.jsx";
-import useAlerts from './hooks/hooks.js'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './stylesheets/App.css';
+import logoUrl from './assets/logo.png';
 
 export default function App() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-    const {alerts, spawnBonusAlert, spawnSurgeAlert, spawnBreakAlert} = useAlerts();
+    async function handleSubmit(e) {
+        e.preventDefault();
+
+        navigate('/user', { replace: true }); // use replace:false if you want Back to return here
+    }
+
+    const canSubmit = username.trim() !== '' && password.trim() !== '';
 
     return (
-        <div style={{minHeight: '100vh', minWidth: '100%', display: 'flex', flexDirection: 'column'}}>
-            <h1>Home</h1>
-            <nav style={{marginTop: 120}}>
-                <Link to="/user">User</Link>
-                <Link to="/dev">Dev</Link>
-            </nav>
-
-            <button onClick={alerts.spawnBreakAlert}>Spawn Alert</button>
-            <div style={{marginTop: 20}}>
-                {alerts.map((a) => (
-                    <Alert message = {a.message}/>
-                ))}
-            </div>
+        <div id="loginContainer">
+            <img src={logoUrl} alt="Logo" className="login-logo"/>
+            <form className="login-card" onSubmit={handleSubmit}>
+                <div className="field">
+                    <input
+                        id="username"
+                        autoComplete="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="yourname"
+                        required
+                    />
+                </div>
+                <div className="field">
+                    <input
+                        id="password"
+                        type="password"
+                        autoComplete="current-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        required
+                    />
+                </div>
+                <button type="submit" className="login-button" disabled={!canSubmit}>
+                    Log in
+                </button>
+            </form>
         </div>
-    )
+    );
 }

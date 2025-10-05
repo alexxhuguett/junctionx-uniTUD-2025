@@ -35,5 +35,9 @@ export default function useAlerts() {
         spawnAlert("Surge in 15 mins in Galati");
     }, [spawnAlert]);
 
-    return { alerts, spawnBonusAlert, spawnSurgeAlert, spawnBreakAlert };
+    const spawnAcceptRideAlert = useCallback(() => {
+        spawnAlert("Ride incoming");
+    }, [spawnAlert]);
+
+    return { alerts, spawnBonusAlert, spawnSurgeAlert, spawnBreakAlert, spawnAcceptRideAlert };
 }
