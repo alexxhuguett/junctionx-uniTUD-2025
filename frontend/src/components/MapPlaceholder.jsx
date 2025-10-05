@@ -218,18 +218,7 @@ export default function MapPlaceholder() {
                         </AdvancedMarker>
                     ))}
 
-                    <AdvancedMarker position={centerPosition}>
-                        <img
-                            src={CarURL}
-                            alt=""
-                            style={{
-                                width: carSize,
-                                height: carSize,
-                                transform: 'translate(-50%, -50%)'
-                            }}
-                            draggable="false"
-                        />
-                    </AdvancedMarker>
+                    <AdvancedMarker position={centerPosition}></AdvancedMarker>
 
                     {Array.from({length: routeCount}).map((_, i) => {
                         const origin = startPoints[i];
