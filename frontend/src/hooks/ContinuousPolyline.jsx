@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useMap } from '@vis.gl/react-google-maps';
 
-export function Polyline({ path, strokeColor = '#FF0000', strokeOpacity = 0.8, strokeWeight = 4 }) {
+export function ContinuousPolyline({ path, strokeColor = '#FF0000', strokeOpacity = 0.8, strokeWeight = 4 }) {
     const map = useMap();
     const [polyline, setPolyline] = useState(null);
 

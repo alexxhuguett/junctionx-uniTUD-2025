@@ -14,6 +14,18 @@ export default function useAlerts() {
         }, 5000);
     }, []);
 
+    const spawnBreakAlert = useCallback(() => {
+        const id = Date.now();
+        const message = "Break Alert";
+        setAlerts(prev => [...prev, { id, message}]);
+
+        // remove this alert after 5 seconds
+        setTimeout(() => {
+            setAlerts(prev => prev.filter(a => a.id !== id));
+        }, 5000);
+    }, [spawnAlert]);
+
+
     // convenience wrappers
     const spawnBonusAlert = useCallback(() => {
         spawnAlert("If you keep it up you get a 200 euro bonus");
@@ -21,10 +33,6 @@ export default function useAlerts() {
 
     const spawnSurgeAlert = useCallback(() => {
         spawnAlert("Surge in 15 mins in Galati");
-    }, [spawnAlert]);
-
-    const spawnBreakAlert = useCallback(() => {
-        spawnAlert("Take a break");
     }, [spawnAlert]);
 
     return { alerts, spawnBonusAlert, spawnSurgeAlert, spawnBreakAlert };

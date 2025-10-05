@@ -6,6 +6,5 @@ import TwoPane from "../components/TwoPane.jsx";
 export default function User() {
     return (
         <TwoPane left = {<DriverMap />} right = {<Dashboard />}></TwoPane>
-        // <button></button>
     );
 }

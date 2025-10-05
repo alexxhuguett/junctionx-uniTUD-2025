@@ -1,8 +1,8 @@
 import {APIProvider, Map, AdvancedMarker, useMap, useMapsLibrary} from '@vis.gl/react-google-maps';
 import {useEffect, useMemo, useState} from 'react';
-import {Polyline} from "./Polyline.jsx";
+import {ContinuousPolyline} from "./ContinuousPolyline.jsx";
 
-export default function RouteCreator({ origin, destination, travelMode = 'DRIVING' }) {
+export default function ContinuousRouteCreator({ origin, destination, travelMode = 'DRIVING'}) {
     const map = useMap();
     const routesLib = useMapsLibrary('routes');
     const [path, setPath] = useState([]); // array of {lat, lng}
@@ -20,7 +20,7 @@ export default function RouteCreator({ origin, destination, travelMode = 'DRIVIN
 
     if (!path.length) return null;
     return (
-        <Polyline
+        <ContinuousPolyline
             path={path}
             // style options; tweak as you like
             strokeOpacity={1}
