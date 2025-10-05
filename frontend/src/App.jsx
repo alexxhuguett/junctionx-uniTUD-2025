@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import './stylesheets/App.css';
 import logoUrl from './assets/logo.png';
 import { setUser } from './lib/userStore'; // 👈 add this
+import DecisionListener from './components/DecisionListener';
 
-    export default function App() {
-        const [username, setUsername] = useState('');
-        const [password, setPassword] = useState('');
-        const navigate = useNavigate();
+export default function App() {
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -17,11 +18,13 @@ import { setUser } from './lib/userStore'; // 👈 add this
         navigate('/user', { replace: true });
     }
 
-        const canSubmit = username.trim() !== '' && password.trim() !== '';
+    const canSubmit = username.trim() !== '' && password.trim() !== '';
 
-        return (
+    return (
+        <>
+            <DecisionListener />
             <div id="loginContainer">
-                <img src={logoUrl} alt="Logo" className="login-logo"/>
+                <img src={logoUrl} alt="Logo" className="login-logo" />
                 <form className="login-card" onSubmit={handleSubmit}>
                     <div className="field">
                         <input
@@ -49,5 +52,6 @@ import { setUser } from './lib/userStore'; // 👈 add this
                     </button>
                 </form>
             </div>
-        );
-    }
+        </>
+    );
+}
