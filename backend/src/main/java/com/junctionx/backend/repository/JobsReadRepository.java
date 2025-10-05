@@ -1,4 +1,4 @@
-package com.junctionx.backend.model.repository;
+package com.junctionx.backend.repository;
 
 import com.junctionx.backend.sim.dto.TripDTO;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;

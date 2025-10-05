@@ -1,4 +1,4 @@
-package com.junctionx.backend.model.projection;
+package com.junctionx.backend.model.Projection;
 
 import java.time.OffsetDateTime;
 

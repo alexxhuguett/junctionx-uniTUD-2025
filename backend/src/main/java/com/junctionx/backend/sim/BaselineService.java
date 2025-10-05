@@ -1,6 +1,6 @@
 package com.junctionx.backend.sim;
 
-import com.junctionx.backend.model.repository.JobsReadRepository;
+import com.junctionx.backend.repository.JobsReadRepository;
 import com.junctionx.backend.sim.dto.BaselineMetrics;
 import com.junctionx.backend.sim.dto.TripDTO;
 import org.springframework.stereotype.Service;
