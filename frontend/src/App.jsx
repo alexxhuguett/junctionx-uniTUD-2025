@@ -4,6 +4,7 @@ import './stylesheets/App.css';
 import logoUrl from './assets/logo.png';
 import { setUser } from './lib/userStore'; // 👈 add this
 import DecisionListener from './components/DecisionListener';
+import DecisionDriver from "./components/DecisionDriver.jsx";
 
 export default function App() {
     const [username, setUsername] = useState('');
@@ -22,7 +23,6 @@ export default function App() {
 
     return (
         <>
-            <DecisionListener />
             <div id="loginContainer">
                 <img src={logoUrl} alt="Logo" className="login-logo" />
                 <form className="login-card" onSubmit={handleSubmit}>

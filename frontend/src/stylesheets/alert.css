@@ -1,8 +1,9 @@
 /* Stack container (apply to your #alertContainer) */
 .alert-stack {
+
     position: absolute; /* make sure #mapContainer is position:relative */
     top: 16px;
-    right: 16px;
+    right: auto;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -17,6 +18,8 @@
     --accent: #ffb757;
     --border: rgba(0,0,0,.06);
 
+    position:absolute;
+
     pointer-events: auto; /* clickable inside */
     width: 280px;
     max-width: 80vw;
@@ -29,6 +32,9 @@
             0 2px 6px rgba(0,0,0,.06);
     overflow: hidden;
     animation: alert-enter .25s ease-out both;
+
+    justify-self:center;
+    left: 100px;
 }
 
 /* Left accent bar */

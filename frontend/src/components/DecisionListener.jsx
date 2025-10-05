@@ -1,32 +1,21 @@
-import { useEffect } from "react";
-
-// Remove these stubs if you already have real alert functions.
-if (typeof window.AlertYes !== "function") {
-    window.AlertYes = (message, route, pickupTimeIso) =>
-        console.log("[AlertYes]", message, route, pickupTimeIso);
-}
-if (typeof window.AlertNo !== "function") {
-    window.AlertNo = (message) => console.log("[AlertNo]", message);
-}
-if (typeof window.AlertBreak !== "function") {
-    window.AlertBreak = (message, pickupTimeIso) =>
-        console.log("[AlertBreak]", message, pickupTimeIso);
-}
+import { useEffect, useState } from "react";
+import AcceptRide from "./alerts/AcceptRide.jsx";
+import Alert from "./alerts/Alert.jsx";
+import BreakAlert from "./alerts/BreakAlert.jsx";
+import {MapAPI} from "./MapPlaceholder.jsx";
 
 export default function DecisionListener() {
+    const [ev, setEv] = useState(null); // latest decision event or null
+
     useEffect(() => {
-        // FE is on :5173, BE is on :8080
         const es = new EventSource("http://localhost:8080/api/stream/decisions");
 
         es.addEventListener("decision", (e) => {
-            const ev = JSON.parse(e.data); // { type, message, route?, pickupTimeIso }
-
-            if (ev.type === "YES" && ev.route) {
-                window.AlertYes(ev.message, ev.route, ev.pickupTimeIso);
-            } else if (ev.type === "NO") {
-                window.AlertNo(ev.message);
-            } else if (ev.type === "BREAK") {
-                window.AlertBreak(ev.message, ev.pickupTimeIso);
+            try {
+                const parsed = JSON.parse(e.data); // { type, message, route?, pickupTimeIso }
+                setEv(parsed);
+            } catch (err) {
+                console.error("Invalid decision event:", err);
             }
         });
 
@@ -34,5 +23,37 @@ export default function DecisionListener() {
         return () => es.close();
     }, []);
 
-    return null; // listener only
+    // No event → render nothing
+    if (!ev) return null;
+
+    const handleClose = () => setEv(null);
+    const handleAccept = () => setEv(null); // hook your accept action here if needed
+
+    // YES → show AcceptRide with pickup/dropoff strings
+    if (ev.type === "YES" && ev.route) {
+        const pickup = formatCoords(ev.route.pickup);
+        const dropoff = formatCoords(ev.route.dropoff);
+        return (
+            <AcceptRide
+                onAccept={handleAccept}
+                onClose={handleClose}
+                pickup={pickup}
+                dropoff={dropoff}
+            />
+        );
+    }
+
+    // BREAK → show BreakAlert
+    if (ev.type === "BREAK") {
+        return <BreakAlert onAccept={handleAccept} onClose={handleClose} />;
+    }
+
+    // NO (or fallback) → simple info Alert
+    return <Alert message={ev.message || "No decision."} onClose={handleClose} />;
+}
+
+function formatCoords(point) {
+    if (!point || typeof point.lat !== "number" || typeof point.lon !== "number") return "";
+    const fmt = (n) => Number(n).toFixed(5);
+    return `${fmt(point.lat)}, ${fmt(point.lon)}`;
 }
