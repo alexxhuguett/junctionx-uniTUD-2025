@@ -4,10 +4,10 @@ import './stylesheets/App.css';
 import logoUrl from './assets/logo.png';
 import { setUser } from './lib/userStore'; // 👈 add this
 
-export default function App() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const navigate = useNavigate();
+    export default function App() {
+        const [username, setUsername] = useState('');
+        const [password, setPassword] = useState('');
+        const navigate = useNavigate();
 
     function handleSubmit(e) {
         e.preventDefault();
@@ -17,37 +17,37 @@ export default function App() {
         navigate('/user', { replace: true });
     }
 
-    const canSubmit = username.trim() !== '' && password.trim() !== '';
+        const canSubmit = username.trim() !== '' && password.trim() !== '';
 
-    return (
-        <div id="loginContainer">
-            <img src={logoUrl} alt="Logo" className="login-logo"/>
-            <form className="login-card" onSubmit={handleSubmit}>
-                <div className="field">
-                    <input
-                        id="username"
-                        autoComplete="username"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                        placeholder="yourname"
-                        required
-                    />
-                </div>
-                <div className="field">
-                    <input
-                        id="password"
-                        type="password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="••••••••"
-                        required
-                    />
-                </div>
-                <button type="submit" className="login-button" disabled={!canSubmit}>
-                    Log in
-                </button>
-            </form>
-        </div>
-    );
-}
+        return (
+            <div id="loginContainer">
+                <img src={logoUrl} alt="Logo" className="login-logo"/>
+                <form className="login-card" onSubmit={handleSubmit}>
+                    <div className="field">
+                        <input
+                            id="username"
+                            autoComplete="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="yourname"
+                            required
+                        />
+                    </div>
+                    <div className="field">
+                        <input
+                            id="password"
+                            type="password"
+                            autoComplete="current-password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="••••••••"
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="login-button" disabled={!canSubmit}>
+                        Log in
+                    </button>
+                </form>
+            </div>
+        );
+    }

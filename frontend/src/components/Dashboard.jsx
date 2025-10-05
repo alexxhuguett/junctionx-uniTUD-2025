@@ -14,7 +14,7 @@ export default function Dashboard() {
     const [breakElapsed, setBreakElapsed] = useState(0);
 
     const [money, setMoney] = useState(0.0);
-    const [jobsCompleted, setJobsCompleted] = useState(12);
+    const [jobsCompleted, setJobsCompleted] = useState(20);
     const [bonusTarget, setBonusTarget] = useState(25);
 
     const intervalRef = useRef(null);
@@ -102,6 +102,12 @@ export default function Dashboard() {
                 ? "metric-value tsb-orange"
                 : "metric-value";
 
+    // Progress percent for Jobs until Bonus
+    const bonusPct = Math.max(
+        0,
+        Math.min(100, Math.round(((bonusTarget || 0) === 0 ? 0 : (jobsCompleted / bonusTarget)) * 100))
+    );
+
     if (!started) {
         return (
             <div className="db-root">
@@ -134,7 +140,28 @@ export default function Dashboard() {
 
                     <div className="metric">
                         <div className="metric-label">Jobs until Bonus</div>
-                        <div className="metric-value">
+
+                        {/* Progress bar */}
+                        <div
+                            className="progress"
+                            role="progressbar"
+                            aria-label="Jobs progress"
+                            aria-valuenow={bonusPct}
+                            aria-valuemin={0}
+                            aria-valuemax={100}
+                        >
+                            <div className="progress-track">
+                                <div
+                                    className={`progress-fill ${bonusPct >= 75 ? "progress-fill--complete" : ""}`}
+                                    style={{width: `${bonusPct}%`}}
+                                />
+                            </div>
+                        </div>
+
+
+
+                        {/* 12/25 below the bar */}
+                        <div className="metric-subvalue">
                             {jobsCompleted}/{bonusTarget}
                         </div>
                     </div>
