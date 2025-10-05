@@ -1,19 +1,11 @@
-# How to run the project
+# How to run the project (MAC and Linux)
 
-Spring boot :
-./mvnw clean compile -DskipTests
-./mvnw spring-boot:run
 
-Frontend :
-npm install
-npm run dev
 
-ML :
 ./dev-up.sh
-python3 -m ml.server \
-    --excel junctionx-uniTUD-2025/ml/data/uber_hackathon_v2_mock_data.xlsx \
-    --model junctionx-uniTUD-2025/ml/artifacts/model.pkl \
-    --host 0.0.0.0 --port 8000
+
+
+For windowsows use wsl or bash
 
 
 # 🛠️ Project Setup – Docker + PostgreSQL + pgAdmin + Spring Boot
@@ -354,3 +346,4 @@ Expected output:
 
 
 ./scripts/reset_db.sh
+
