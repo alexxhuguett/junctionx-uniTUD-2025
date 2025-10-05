@@ -135,6 +135,76 @@ def predict_one(ride_id: str) -> Any:
     return jsonify({"ride_id": ride_id, "rating": rating, "source": "excel"})
 
 
+@app.route("/decision/<ride_id>", methods=["GET"])
+def decision(ride_id: str) -> Any:
+    """Return start/end coordinates for a ride if its score > 50, else null.
+
+    Response
+    - If score > 50: {"latitude_start": float, "longitude_start": float, "latitude_end": float, "longitude_end": float}
+    - If score <= 50: null
+    - 404 if ride_id unknown and no external features available
+    """
+    global STATE
+    if STATE is None:
+        abort(503, description="Model not loaded")
+
+    # Try external features first to compute score (if configured)
+    features = _fetch_external_features(str(ride_id))
+    coord_payload: Optional[dict] = None
+    if features is not None:
+        cols = CATEGORICAL_FEATURES + NUMERIC_FEATURES
+        row = {c: features.get(c) for c in cols}
+        X_one = pd.DataFrame([row], columns=cols)
+        pred = STATE.model.predict(X_one)
+        rating = float(pred[0])
+
+        # Prefer coordinates from external payload if present
+        lat_s = features.get("latitude_start")
+        lon_s = features.get("longitude_start")
+        lat_e = features.get("latitude_end")
+        lon_e = features.get("longitude_end")
+        if all(v is not None for v in (lat_s, lon_s, lat_e, lon_e)):
+            coord_payload = {
+                "latitude_start": float(lat_s),
+                "longitude_start": float(lon_s),
+                "latitude_end": float(lat_e),
+                "longitude_end": float(lon_e),
+            }
+        else:
+            # Fallback to Excel row for coordinates if available
+            idx = STATE.index_by_ride.get(str(ride_id))
+            if idx is not None:
+                row_df = STATE.df.iloc[idx]
+                if set(["latitude_start", "longitude_start", "latitude_end", "longitude_end"]).issubset(row_df.index):
+                    coord_payload = {
+                        "latitude_start": float(row_df["latitude_start"]),
+                        "longitude_start": float(row_df["longitude_start"]),
+                        "latitude_end": float(row_df["latitude_end"]),
+                        "longitude_end": float(row_df["longitude_end"]),
+                    }
+        return jsonify(coord_payload) if rating > 50.0 and coord_payload is not None else jsonify(None)
+
+    # Fallback to preloaded Excel rows only
+    idx = STATE.index_by_ride.get(str(ride_id))
+    if idx is None:
+        abort(404, description="ride_id not found")
+    rating = float(STATE.preds[idx])
+    if rating <= 50.0:
+        return jsonify(None)
+    row_df = STATE.df.iloc[idx]
+    required_cols = ["latitude_start", "longitude_start", "latitude_end", "longitude_end"]
+    if not set(required_cols).issubset(row_df.index):
+        # Coordinates unavailable; return null to indicate no decision
+        return jsonify(None)
+    payload = {
+        "latitude_start": float(row_df["latitude_start"]),
+        "longitude_start": float(row_df["longitude_start"]),
+        "latitude_end": float(row_df["latitude_end"]),
+        "longitude_end": float(row_df["longitude_end"]),
+    }
+    return jsonify(payload)
+
+
 def _calc_idle_and_rest_minutes(seq: pd.DataFrame) -> Dict[str, float]:
     """Compute idle and rest minutes from a sorted sequence of rides.
 

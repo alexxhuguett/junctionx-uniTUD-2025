@@ -78,6 +78,10 @@ Serve predictions (HTTP)
   GET http://localhost:8000/health
   GET http://localhost:8000/prediction/<ride_id>
   GET http://localhost:8000/prediction/top/<n>
+  GET http://localhost:8000/decision/<ride_id>
+    - Returns coordinates if score > 50:
+      {"latitude_start", "longitude_start", "latitude_end", "longitude_end"}
+    - Returns null otherwise
 
 Notes
 - If scikit-learn is unavailable, training falls back to a no-op model; you can
