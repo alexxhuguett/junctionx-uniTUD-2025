@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../stylesheets/dashboard.css";
-
-import {sessions} from "../api/sessions.js";
+import {MapAPI} from "./MapPlaceholder.jsx";
+import DemoControls from "./DemoControls.jsx";
 
 export default function Dashboard() {
     const [started, setStarted] = useState(false);
@@ -43,6 +43,9 @@ export default function Dashboard() {
     const handleBreakToggle = () => {
         const now = Date.now();
         const isoTime = new Date(now).toISOString();
+
+        const startPosition = { lat: 60.010338, lng: 30.356907 };
+        const endPosition = {lat: 60.020338, lng: 30.35691};
 
         if (!onBreak) {
             setBreakStart(now);
@@ -180,6 +183,7 @@ export default function Dashboard() {
                     </button>
                 </div>
             </div>
+            <DemoControls/>
         </div>
     );
 }
