@@ -1,11 +1,15 @@
-import "../../stylesheets/alert.css"
+import AlertCard from "./AlertCard.jsx";
 
-export default function BreakAlert() {
+export default function BreakAlert({ onAccept, onClose }) {
     return (
-        <div class="alert" role="alert">
-            <div>Do you want to take a break?</div>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">Close</button>
-            <button type="button" class="accept" data-dismiss="alert" aria-label="Accept">Accept</button>
-        </div>
-    )
+        <AlertCard
+            variant="break"
+            title="Do you want to take a break?"
+            message="You’ve been active for a while. A quick 10–15 minute pause can help."
+            acceptLabel="Take a break"
+            closeLabel="Keep going"
+            onAccept={onAccept}
+            onClose={onClose}
+        />
+    );
 }
