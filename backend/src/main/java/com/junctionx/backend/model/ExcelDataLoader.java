@@ -4,11 +4,7 @@ import com.junctionx.backend.model.enums.ProductType;
 import com.junctionx.backend.model.enums.VehicleType;
 import com.junctionx.backend.model.enums.FuelType;
 import com.junctionx.backend.model.enums.EarnerType;
-import com.junctionx.backend.repository.EarnerRepository;
-import com.junctionx.backend.repository.HeatmapRepository;
-import com.junctionx.backend.repository.IncentiveRepository;
-import com.junctionx.backend.repository.JobRepository;
-import com.junctionx.backend.repository.SurgeByHourRepository;
+import com.junctionx.backend.repository.*;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
@@ -41,6 +37,9 @@ public class ExcelDataLoader implements CommandLineRunner {
     @Autowired private IncentiveRepository incentiveRepo;
     @Autowired private SurgeByHourRepository surgeRepo;
     @Autowired private HeatmapRepository heatmapRepo;
+    @Autowired private CancellationRateRepository cancellationRateRepo;
+    @Autowired private WeatherRepository weatherRepo;
+
 
     private static final Logger log = LoggerFactory.getLogger(ExcelDataLoader.class);
     private static final int BATCH = 1000;
@@ -56,6 +55,11 @@ public class ExcelDataLoader implements CommandLineRunner {
             importIncentives(wb, "incentives_weekly");
             importSurge(wb, "surge_by_hour");
             importHeatmap(wb, "heatmap");
+            importCancellationRates(wb, "cancellation_rates");
+            importWeather(wb, "weather_daily");
+
+
+
         }
     }
 
@@ -306,6 +310,67 @@ public class ExcelDataLoader implements CommandLineRunner {
         }
         if (!buf.isEmpty()) heatmapRepo.saveAll(buf);
     }
+
+    private void importCancellationRates(Workbook wb, String sheet) {
+        Sheet sh = wb.getSheet(sheet); if (sh == null) return;
+
+        Map<String,Integer> c = header(sh.getRow(0));
+        List<CancellationRate> buf = new ArrayList<>(BATCH);
+
+        for (int i = 1; i <= sh.getLastRowNum(); i++) {
+            Row r = sh.getRow(i); if (r == null) continue;
+
+            Integer cityId = getInt(r, c, "city_id");
+            String hex9    = getString(r, c, "hexagon_id9");
+            Double pct     = getDouble(r, c, "cancellation_rate_pct"); // sheet header
+
+            // Required fields (your entity has hexagonId9 NOT NULL)
+            if (cityId == null || hex9 == null || hex9.isBlank()) continue;
+
+            CancellationRate cr = new CancellationRate();
+            cr.setCityId(cityId);
+            cr.setHexagonId9(hex9);
+
+            // Entity field is "cancellationRate" (NOT *_pct)
+            if (pct != null) cr.setCancellationRate(pct);
+
+            // job_count exists in the sheet but is not a field on the entity → ignore
+            buf.add(cr);
+
+            if (buf.size() == BATCH) { cancellationRateRepo.saveAll(buf); buf.clear(); }
+        }
+        if (!buf.isEmpty()) cancellationRateRepo.saveAll(buf);
+    }
+
+    private void importWeather(Workbook wb, String sheet) {
+        Sheet sh = wb.getSheet(sheet); if (sh == null) return;
+
+        Map<String,Integer> c = header(sh.getRow(0));
+        List<Weather> buf = new ArrayList<>(BATCH);
+
+        for (int i = 1; i <= sh.getLastRowNum(); i++) {
+            Row r = sh.getRow(i); if (r == null) continue;
+
+            // Sheet columns: date, city_id, weather
+            LocalDate date  = getDate(r, c, "date");
+            Integer  cityId = getInt(r, c, "city_id");
+            String   wx     = getString(r, c, "weather");
+
+            // Required: cityId + date (keep it strict)
+            if (cityId == null || date == null) continue;
+
+            Weather w = new Weather();    // JPA no-args ctor
+            w.setCityId(cityId);
+            w.setDate(date);
+            if (wx != null && !wx.isBlank()) w.setWeather(wx);
+
+            buf.add(w);
+            if (buf.size() == BATCH) { weatherRepo.saveAll(buf); buf.clear(); }
+        }
+        if (!buf.isEmpty()) weatherRepo.saveAll(buf);
+    }
+
+
 
     /* ============================ Helpers ============================ */
 
