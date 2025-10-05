@@ -77,6 +77,14 @@
     color: #ffffff;
 }
 
+/* Smaller sub-value (e.g., 12/25) */
+.metric-subvalue {
+    margin-top: 0.4rem;
+    font-size: clamp(0.9rem, 1vw, 1rem);
+    font-weight: 600;
+    color: #e5e7eb;
+}
+
 /* Actions pinned to the bottom of the card */
 .actions {
     display: flex;
@@ -142,6 +150,31 @@
 .tsb-orange { color: #ffbd6b !important; } /* same as resume/orange */
 .tsb-red    { color: #ef7070 !important; } /* same as stop red */
 
+/* ---------- Progress bar for Jobs until Bonus ---------- */
+.progress {
+    width: 100%;
+    max-width: 420px;
+    margin: 0.25rem auto 0.15rem auto; /* center under label */
+}
+.progress-track {
+    position: relative;
+    height: 10px;
+    border-radius: 999px;
+    background: #0f0f20;
+    border: 1px solid #1f2038;
+    overflow: hidden;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: #ffbd6b; /* same orange accent */
+    border-radius: 999px;
+    transition: width 300ms ease;
+}
+.progress-fill--complete {
+    background: #77dd77; /* green when complete (matches Start) */
+}
 
 /* Small widths */
 @media (max-width: 360px) {
