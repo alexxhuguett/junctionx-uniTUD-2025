@@ -1,3 +1,9 @@
+#Important
+
+export PYTHONPATH=junctionx-uniTUD-2025
+
+do this from parent of project root. 
+
 Ride Scoring ML
 
 Overview
