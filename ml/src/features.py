@@ -68,12 +68,14 @@ def compute_fatigue_features(df: pd.DataFrame) -> pd.DataFrame:
     if not {"driver_id", "start_time", "end_time", "duration_mins"}.issubset(df.columns):
         raise ValueError("Dataframe missing required columns for fatigue features")
 
-    # Limit groupby.apply to needed columns to avoid pandas include_groups warning
-    tmp = (
-        df.groupby("driver_id", group_keys=False)[["start_time", "end_time", "duration_mins"]]
-        .apply(_active_minutes_since_last_rest)
-    )
-    df.loc[:, "active_minutes_since_rest"] = tmp
+    # Compute per-driver active minutes since last rest; ensure a 1-D Series
+    tmp = df.groupby("driver_id", group_keys=False).apply(_active_minutes_since_last_rest)
+    # Some pandas versions may return a DataFrame; squeeze to first column
+    if isinstance(tmp, pd.DataFrame):
+        tmp = tmp.iloc[:, 0]
+    # Align to original index explicitly
+    tmp = tmp.reindex(df.index)
+    df.loc[:, "active_minutes_since_rest"] = tmp.values
     return df
 
 
@@ -84,8 +86,16 @@ def finalize_feature_table(df: pd.DataFrame) -> pd.DataFrame:
     We avoid high-cardinality hex IDs and rely on contextual aggregates.
     """
     df = df.copy()
-    df = compute_avg_speed(df)
-    df = compute_fatigue_features(df)
+    # If avg_speed_kmh not provided (e.g., Excel path), compute it
+    if "avg_speed_kmh" not in df.columns:
+        df = compute_avg_speed(df)
+    # If fatigue not provided and timestamps exist, compute it
+    if "active_minutes_since_rest" not in df.columns:
+        if {"start_time", "end_time", "duration_mins"}.issubset(df.columns):
+            df = compute_fatigue_features(df)
+        else:
+            # Leave missing; selection below will error if required
+            pass
 
     # Convenience booleans
     df.loc[:, "home_city_match"] = (df.get("home_city_id") == df.get("city_id")).astype("float")

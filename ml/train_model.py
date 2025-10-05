@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from .src.data_loader import load_and_prepare
+from .src.data_loader import load_and_prepare, load_postgres_view
 from .src.features import finalize_feature_table, compute_avg_speed, compute_fatigue_features
 from .src.labeling import Weights, build_labels
 from .src.model import RideScoringModel
@@ -26,7 +26,10 @@ from .src.model import RideScoringModel
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Train ride scoring model")
-    ap.add_argument("--excel", required=True, help="Path to Excel dataset")
+    src = ap.add_mutually_exclusive_group(required=True)
+    src.add_argument("--excel", help="Path to Excel dataset")
+    src.add_argument("--postgres-conn", help="Postgres connection string (e.g., postgresql+psycopg2://user:pass@host:port/db)")
+    ap.add_argument("--pg-view", default="public.v_ride_features", help="Postgres view to read when using --postgres-conn")
     ap.add_argument("--outdir", required=True, help="Directory to save model artifacts")
     ap.add_argument("--w_profit", type=float, default=0.5, help="Weight for profit score")
     ap.add_argument("--w_opportunity", type=float, default=0.3, help="Weight for opportunity score")
@@ -34,15 +37,16 @@ def main() -> None:
     ap.add_argument("--model", choices=["hgb", "rf", "ridge"], default="hgb", help="Regressor type")
     args = ap.parse_args()
 
-    excel_path = args.excel
     outdir = Path(args.outdir)
 
-    # Load and enrich base data
-    df = load_and_prepare(excel_path)
-
-    # Ensure labeling prerequisites exist (avg_speed_kmh, active_minutes_since_rest)
-    df_enriched = compute_avg_speed(df.copy())
-    df_enriched = compute_fatigue_features(df_enriched)
+    # Load data either from Postgres view or Excel
+    if args.postgres_conn:
+        df_enriched = load_postgres_view(args.postgres_conn, view=args.pg_view)
+    else:
+        df = load_and_prepare(args.excel)
+        # Ensure labeling prerequisites exist (avg_speed_kmh, active_minutes_since_rest)
+        df_enriched = compute_avg_speed(df.copy())
+        df_enriched = compute_fatigue_features(df_enriched)
 
     # Feature table (built from enriched data)
     X = finalize_feature_table(df_enriched)
