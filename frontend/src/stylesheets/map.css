@@ -12,3 +12,28 @@ button {
     align-self: flex-start;
     position: relative;
 }
+
+#mapContainer {
+    position:relative;
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#alertContainer {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;         /* <-- was zIndex (ignored) */
+    display: flex;
+    flex-direction: column;/* <-- was flexDirection (ignored) */
+    gap: 8px;              /* 8em was huge; use px */
+    width: min(640px, 90vw);
+    pointer-events: none;  /* let map be draggable */
+}
+#alertContainer > * { pointer-events: auto; } /* alerts still clickable */
