@@ -22,7 +22,7 @@ import useAlerts from "../hooks/hooks.js";
 
 
 const MapPlaceholder = forwardRef(function MapPlaceholder(_props, ref) {
-    const centerPosition = { lat: 60.010338, lng: 30.356907 };
+    const centerPosition = { lat: 52.00750, lng: 4.36480 };
 
     const { alerts, spawnSurgeAlert, spawnBreakAlert, spawnBonusAlert, spawnAcceptRideAlert} = useAlerts();
 

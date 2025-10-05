@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../stylesheets/dashboard.css";
 import {MapAPI} from "./MapPlaceholder.jsx";
 import DemoControls from "./DemoControls.jsx";
+import DecisionDriver from "./DecisionDriver.jsx";
 
 export default function Dashboard() {
     const [started, setStarted] = useState(false);
@@ -183,7 +184,7 @@ export default function Dashboard() {
                     </button>
                 </div>
             </div>
-            <DemoControls/>
+            <DecisionDriver/>
         </div>
     );
 }
